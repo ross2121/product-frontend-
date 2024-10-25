@@ -1,4 +1,4 @@
-import { UserTable } from "@/components/example/productdetailuser";
+import  UserTable  from "@/components/example/productdetailuser";
 import React from "react";
 
 const page = () => {

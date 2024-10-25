@@ -8,7 +8,7 @@ import {cn} from "@/lib/utils"
 // import { authState } from "../atoms/atutomath";
 import { Input } from "./input";
  // Correct import
-const backendUrl="https://product-1-unym.onrender.com";
+const backendUrl="https://product-2-g2b7.onrender.com";
 const OTPPage = () => {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,6 +16,7 @@ const OTPPage = () => {
   // const [user, setuser] = useState({ value: null });
 //   const [auth, setAuth] = useRecoilState(authState);
   const router = useRouter();
+ 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +24,7 @@ const OTPPage = () => {
     setError("");
 
     try {
-      const tempUserData = localStorage.getItem("tempUserData");
+      const tempUserData = window.localStorage.getItem("tempUserData");
       if (!tempUserData) {
         throw new Error("No user data found in localStorage.");
       }

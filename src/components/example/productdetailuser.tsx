@@ -47,9 +47,18 @@ const ProductList = () => {
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
   const router = useRouter();
-  const email=localStorage.getItem("user");
+ 
+    // const email=window.localStorage.getItem("user");
+    useEffect(()=>{
+      if(window!==undefined){
+        const email=window.localStorage.getItem("user");
+        setEmail(email);
+      }
+    },[])
+  
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -66,7 +75,7 @@ const ProductList = () => {
       }//https://product-2-g2b7.onrender.com/api/product/pri/${email}
     };
     fetchProducts();
-  }, []);
+  }, [email]);
 
   const deleteProduct = async () => {
     if (!selectedProduct) return;
@@ -75,7 +84,7 @@ const ProductList = () => {
         `https://product-2-g2b7.onrender.com/api/product/product/${selectedProduct.id}`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("authtoken")}`,
+            Authorization: `Bearer ${window.localStorage.getItem("authtoken")}`,
           },
         }
       );
