@@ -1,6 +1,6 @@
 import React from "react";
 import SignUp from "@/components/example/userregister";
-import { BackgroundLines } from "@/components/ui/background-lines";
+import { BackgroundLines } from "@/components/example/background-lines";
 const page = () => {
   return (
     <div>

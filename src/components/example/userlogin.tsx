@@ -8,7 +8,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"; 
 import { useForm } from "react-hook-form"; 
 import { useRouter } from "next/navigation";
-const backendUrl=process.env.BACKEND_URL;
+const backendUrl="https://product-2-g2b7.onrender.com";
 const loginSchema = z.object({
   email: z.string().email("Invalid email address").nonempty("Email is required"),
   password: z.string().min(6, "Password must be at least 6 characters long"),

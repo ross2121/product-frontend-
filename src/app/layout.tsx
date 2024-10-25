@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
-import { SidebarDemo } from "@/components/example/sidebar";
+
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -19,15 +19,15 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className} suppressHydrationWarning>
         {/* Use a flex container to place sidebar and content next to each other */}
-        <div className="flex min-h-screen">
+        {/* <div className="flex min-h-screen"> */}
           {/* Sidebar on the left */}
-          <SidebarDemo />
+          {/* <SidebarDemo /> */}
 
           {/* Main content */}
-          <main className="flex-1 p-4">
+          <main >
             {children}
           </main>
-        </div>
+        {/* </div> */}
       </body>
     </html>
   );

@@ -7,7 +7,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import * as z from "zod";
 
-const backendUrl="https://product-1-unym.onrender.com"
+const backendUrl="https://product-2-g2b7.onrender.com"
 const signupSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   email: z.string().email({ message: "Invalid email address" }),

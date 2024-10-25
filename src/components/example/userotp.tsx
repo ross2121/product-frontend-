@@ -8,7 +8,7 @@ import {cn} from "@/lib/utils"
 // import { authState } from "../atoms/atutomath";
 import { Input } from "./input";
  // Correct import
-const backendUrl=process.env.BACKEND_URL;
+const backendUrl="https://product-1-unym.onrender.com";
 const OTPPage = () => {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);

@@ -7,7 +7,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import * as z from "zod";
 
-const backendUrl=process.env.BACKEND_URL;
+const backendUrl="https://product-2-g2b7.onrender.com";
 const signupSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   email: z.string().email({ message: "Invalid email address" }),
@@ -45,9 +45,9 @@ export default function SignupFormDemo() {
     };
 
     try {
-      const response = await axios.post(`${backendUrl}/api/IM/login`, signupdata);
+      const response = await axios.post(`${backendUrl}/api/IM/signup`, signupdata);
       if (response.status === 200) {
-        router.push("/otpu");
+        router.push("/manager/auth/otp");
         localStorage.setItem("tempUserData", JSON.stringify(signupdata));
       }
     } 
