@@ -24,7 +24,7 @@ interface Product {
   description: string;
   price: number;
   stock: number;
-  sku: string;
+  SKU: string;
   createdby: string;
   createdAt: string;
   updatedAt: string;
@@ -143,7 +143,7 @@ const[Error,setError]=useState("");
                 <TableCell>{product.description}</TableCell>
                 <TableCell>${product.price.toFixed(2)}</TableCell>
                 <TableCell>{product.stock}</TableCell>
-                <TableCell>{product.sku}</TableCell>
+                <TableCell>{product.SKU}</TableCell>
                 <TableCell>{product.createdby}</TableCell>
                 <TableCell>
                   <div className="flex gap-1">

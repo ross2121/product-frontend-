@@ -24,9 +24,15 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "../ui/button";
+
+import * as XLSX from "xlsx"
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import { Edit2, Trash } from "lucide-react";
+import Link from "next/link";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import autoTable from 'jspdf-autotable'
 
 interface Product {
   id: string;
@@ -34,7 +40,7 @@ interface Product {
   description: string;
   price: number;
   stock: number;
-  sku: string;
+ SKU: string;
   createdby: string;
   createdAt: string;
   updatedAt: string;
@@ -66,6 +72,40 @@ const ProductList = () => {
     };
     fetchProducts();
   }, []);
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    
+    doc.text("Product Report", 20, 10);
+    const tableData = products.map((product, index) => [
+      index + 1,
+      product.name,
+      product.description,
+      `$${product.price.toFixed(2)}`,
+      product.stock,
+      product.SKU,
+      product.createdby,
+    ]);
+   autoTable(doc,{
+      head: [["Sl.no", "Name", "Description", "Price", "Stock", "SKU", "Created By"]],
+      body: tableData,
+    });
+    doc.save("product_report.pdf");
+  };
+  const generateExcel = () => {
+    const worksheetData = products.map((product, index) => ({
+      "Sl.no": index + 1,
+      Name: product.name,
+      Description: product.description,
+      Price: `$${product.price.toFixed(2)}`,
+      Stock: product.stock,
+     SKU: product.SKU,
+      "Created By": product.createdby,
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Product Report");
+    XLSX.writeFile(workbook, "product_report.xlsx");
+  };
 
   const deleteProduct = async () => {
     if (!selectedProduct) return;
@@ -141,6 +181,10 @@ const ProductList = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full"
         />
+         <div className="flex gap-4">
+          <Button onClick={generatePDF}>Download PDF</Button>
+          <Button onClick={generateExcel}>Download Excel</Button>
+        </div>
       </div>
       <Table>
         <TableCaption className="mt-16">List of Products</TableCaption>
@@ -160,11 +204,16 @@ const ProductList = () => {
           {filteredProducts.map((product, index) => (
             <TableRow key={product.id}>
               <TableCell>{index + 1}</TableCell>
-              <TableCell className="font-medium">{product.name}</TableCell>
+              
+              <TableCell className="font-semibold">
+                      <Link href={`/admin/chart/${product.id}`}>
+                        <span className="text-blue-600 hover:underline">{product.name}</span>
+                      </Link>
+                    </TableCell>
               <TableCell>{product.description}</TableCell>
               <TableCell>${product.price.toFixed(2)}</TableCell>
               <TableCell>{product.stock}</TableCell>
-              <TableCell>{product.sku}</TableCell>
+              <TableCell>{product.SKU}</TableCell>
               <TableCell>{product.createdby}</TableCell>
               <TableCell>
                 <div className="flex gap-1">

@@ -1,78 +1,106 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";  // Import Chart.js Line component
-import {Chart,registerables } from 'chart.js';  // Import Chart.js and registerables
-import axios from "axios";
-import UserTable  from "./productdetails";
+import React, { useEffect, useState } from 'react';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  TimeScale,
+  Tooltip,
+  Legend,
+  TooltipItem,
+} from 'chart.js';
+import 'chartjs-adapter-date-fns';
+import axios from 'axios';
 
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Tooltip, Legend);
 
-// Register the required components
-Chart.register(...registerables);  
-interface Product{
-    stock:number,
-    name:string
-} 
+interface Data {
+  id: number;
+  previousQuantity: number;
+  newQuantity: number;
+  updatedAt: string;
+  productId: number;
+}
 
-export default function StockChart() {
-  const [stockData, setStockData] = useState<number[]>([]); // Array to store stock levels
-  const [productNames, setProductNames] = useState<string[]>([]); // Array to store product names
-  const [loading, setLoading] = useState(true);
+const QuantityChart: React.FC<{ ProductId: number }> = ({ ProductId }) => {
+  const [products, setProducts] = useState<Data[]>([]);
+  const lowStockThreshold = 20;
 
   useEffect(() => {
-    const fetchStockData = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/product/product");
-        const products = response.data;
-
-        // Extract stock levels and product names for the chart
-        const stockLevels = products.map((product:Product) => product.stock);
-        const names = products.map((product:Product) => product.name);
-
-        setStockData(stockLevels);
-        setProductNames(names);
+        const response = await axios.get(`https://product-2-g2b7.onrender.com/api/product/products/${ProductId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authtoken")}`,
+          },
+        });
+        setProducts(response.data.products);
       } catch (error) {
-        console.error("Error fetching stock data:", error);
-      } finally {
-        setLoading(false);
+        console.error("Error fetching product data:", error);
       }
     };
 
-    fetchStockData();
-  }, []);
+    fetchData();
+  }, [ProductId]);
 
-  const data = {
-    labels: productNames, // Product names as labels
+  const chartData = {
+    labels: products.map((product) => product.updatedAt),
     datasets: [
       {
-        label: "Stock Levels", // Label for the dataset
-        data: stockData, // Stock levels data
-        backgroundColor: "rgba(75, 192, 192, 0.2)", // Light background color for the chart area
-        borderColor: "rgba(75, 192, 192, 1)", // Border color for the line
-        borderWidth: 1, // Thickness of the line
-        fill: true, // Fill under the line
+        label: 'Quantity over Time',
+        data: products.map((product) => product.newQuantity),
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        tension: 0.1,
+        pointBackgroundColor: products.map((product) =>
+          product.newQuantity < lowStockThreshold ? 'rgba(255, 99, 132, 1)' : 'rgba(75, 192, 192, 1)'
+        ),
       },
     ],
   };
 
   const options = {
+    responsive: true,
     scales: {
+      x: {
+        type: 'time' as const,
+        time: {
+          unit: 'day' as const,
+        },
+        title: {
+          display: true,
+          text: 'Date',
+        },
+      },
       y: {
-        beginAtZero: true, // Start y-axis at 0
+        title: {
+          display: true,
+          text: 'Quantity',
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top' as const,
+      },
+      tooltip: {
+        callbacks: {
+          label: (tooltipItem: TooltipItem<'line'>) => {
+            const quantity = tooltipItem.raw as number;
+            return quantity < lowStockThreshold
+              ? `Low Stock: ${quantity}`
+              : `Quantity: ${quantity}`;
+          },
+        },
       },
     },
   };
 
-  return (
-    <div className="flex flex-col items-center">
-      <h2 className="text-2xl font-medium my-6">Stock Level Insights</h2>
-      {loading ? (
-        <p>Loading stock data...</p>
-      ) : (
-        <div className="w-4/5">
-          <Line data={data} options={options} /> {/* Render the line chart */}
-        </div>
-      )}
-      <UserTable /> {/* Render the existing UserTable component */}
-    </div>
-  );
-}
+  return <Line data={chartData} options={options} />;
+};
+
+export default QuantityChart;

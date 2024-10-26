@@ -72,7 +72,7 @@ export default function SignupFormDemo() {
     <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
       <div className="max-w-lg w-full mx-auto rounded-none md:rounded-2xl flex flex-col justify-center items-center p-4 md:p-8 z-10 shadow-input bg-black">
         <h2 className="font-bold text-2xl text-neutral-300 dark:text-neutral-200">
-          Welcome to HospitalConnect
+          Welcome to MINI ERP SYSTEM
         </h2>
         <p className="text-neutral-400 text-sm max-w-sm mt-2 dark:text-neutral-300">
           Register yourself here so you can be yourself, speak freely, and feel close to the most important people in your life no matter where they are.

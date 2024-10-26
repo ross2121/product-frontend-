@@ -150,7 +150,7 @@ export function UserTable() {
                     <TableRow key={user.id}>
                     <TableCell>{index + 1 + indexOfFirstUser}</TableCell>
                     <TableCell className="font-semibold">
-                      <Link href={`/admin/user-details/${user.id}`}>
+                      <Link href={`/admin/userdetails/${user.id}`}>
                         <span className="text-blue-600 hover:underline">{user.name}</span>
                       </Link>
                     </TableCell>

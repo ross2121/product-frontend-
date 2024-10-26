@@ -35,7 +35,7 @@ interface Product {
   description: string;
   price: number;
   stock: number;
-  sku: string;
+  SKU: string;
   createdby: string;
   createdAt: string;
   updatedAt: string;
@@ -55,9 +55,9 @@ const ProductList = () => {
     useEffect(()=>{
       if(window!==undefined){
         const email=window.localStorage.getItem("user");
-        setEmail(email);
+        setEmail(email)
       }
-    },[])
+    })
   
   useEffect(() => {
     const fetchProducts = async () => {
@@ -175,7 +175,7 @@ const ProductList = () => {
               <TableCell>{product.description}</TableCell>
               <TableCell>${product.price.toFixed(2)}</TableCell>
               <TableCell>{product.stock}</TableCell>
-              <TableCell>{product.sku}</TableCell>
+              <TableCell>{product.SKU}</TableCell>
               {/* <TableCell>{product.createdby}</TableCell> */}
               <TableCell>
                 <div className="flex gap-1">

@@ -106,7 +106,7 @@ const EditProduct: React.FC<{ productId?: string }> = ({ productId }) => {
         toast({ title: "Product created successfully." });
       }
 
-      router.push("/admin/products"); // Redirect after success
+      router.push("/admin/listproduct"); 
     } catch (error) {
       console.error("Error saving product data:", error);
       setError(
