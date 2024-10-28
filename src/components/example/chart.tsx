@@ -1,13 +1,11 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
-  TimeScale,
+  BarElement,
   Tooltip,
   Legend,
   TooltipItem,
@@ -15,7 +13,7 @@ import {
 import 'chartjs-adapter-date-fns';
 import axios from 'axios';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 interface Data {
   id: number;
@@ -52,12 +50,11 @@ const QuantityChart: React.FC<{ ProductId: number }> = ({ ProductId }) => {
       {
         label: 'Quantity over Time',
         data: products.map((product) => product.newQuantity),
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        tension: 0.1,
-        pointBackgroundColor: products.map((product) =>
+        backgroundColor: products.map((product) =>
           product.newQuantity < lowStockThreshold ? 'rgba(255, 99, 132, 1)' : 'rgba(75, 192, 192, 1)'
         ),
+        borderColor: 'rgba(0, 0, 0, 0.1)', // Optional: add border color
+        borderWidth: 1,
       },
     ],
   };
@@ -66,10 +63,6 @@ const QuantityChart: React.FC<{ ProductId: number }> = ({ ProductId }) => {
     responsive: true,
     scales: {
       x: {
-        type: 'time' as const,
-        time: {
-          unit: 'day' as const,
-        },
         title: {
           display: true,
           text: 'Date',
@@ -80,6 +73,7 @@ const QuantityChart: React.FC<{ ProductId: number }> = ({ ProductId }) => {
           display: true,
           text: 'Quantity',
         },
+        beginAtZero: true, // Start y-axis from zero
       },
     },
     plugins: {
@@ -89,7 +83,7 @@ const QuantityChart: React.FC<{ ProductId: number }> = ({ ProductId }) => {
       },
       tooltip: {
         callbacks: {
-          label: (tooltipItem: TooltipItem<'line'>) => {
+          label: (tooltipItem: TooltipItem<'bar'>) => {
             const quantity = tooltipItem.raw as number;
             return quantity < lowStockThreshold
               ? `Low Stock: ${quantity}`
@@ -100,7 +94,7 @@ const QuantityChart: React.FC<{ ProductId: number }> = ({ ProductId }) => {
     },
   };
 
-  return <Line data={chartData} options={options} />;
+  return <Bar data={chartData} options={options} />;
 };
 
 export default QuantityChart;

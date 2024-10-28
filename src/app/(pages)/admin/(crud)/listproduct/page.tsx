@@ -1,12 +1,12 @@
 import  UserTable  from "@/components/example/productdetails";
 import React from "react";
 
-const page = () => {
+const Page = () => {
   return (
-    <div className="py-10 flex justify-center  ">
+    <div className="py-10 z-0 flex justify-center  ">
       <UserTable />
     </div>
   );
 };
 
-export default page;
+export default Page;

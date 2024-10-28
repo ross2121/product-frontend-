@@ -28,6 +28,11 @@ import { Button } from "../ui/button";
 import { Edit2, Trash } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Link from "next/link";
+import * as XLSX from "xlsx"
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable'
 
 interface Product {
   id: string;
@@ -58,24 +63,74 @@ const ProductList = () => {
         setEmail(email)
       }
     })
-  
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get<Product[]>(
-          `https://product-2-g2b7.onrender.com/api/product/pri/${email}`
-        );
-        setProducts(response.data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-        setError("Failed to fetch product data.");
-      } finally {
-        setLoading(false);
-      }//https://product-2-g2b7.onrender.com/api/product/pri/${email}
+    const generatePDF = () => {
+      const doc = new jsPDF();
+      
+      doc.text("Product Report", 20, 10);
+      const tableData = products.map((product, index) => [
+        index + 1,
+        product.name,
+        product.description,
+        `$${product.price.toFixed(2)}`,
+        product.stock,
+        product.SKU,
+        product.createdby,
+      ]);
+     autoTable(doc,{
+        head: [["Sl.no", "Name", "Description", "Price", "Stock", "SKU", "Created By"]],
+        body: tableData,
+      });
+      doc.save("product_report.pdf");
     };
-    fetchProducts();
-  }, [email]);
+    const generateExcel = () => {
+      const worksheetData = products.map((product, index) => ({
+        "Sl.no": index + 1,
+        Name: product.name,
+        Description: product.description,
+        Price: `$${product.price.toFixed(2)}`,
+        Stock: product.stock,
+       SKU: product.SKU,
+        "Created By": product.createdby,
+      }));
+      const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Product Report");
+      XLSX.writeFile(workbook, "product_report.xlsx");
+    };
+  
+  
+    useEffect(() => {
+      const fetchProducts = async () => {
+        setLoading(true);
+        try {
+          console.log("Fetching products for email:", email);
+          const response = await axios.get<Product[]>(
+            `https://product-2-g2b7.onrender.com/api/product/pri/${email}`
+          );
+          console.log("Response data:", response.data);
+          setProducts(response.data);
+        } catch (error: unknown) {
+          if (axios.isAxiosError(error)) {
+            // If error is an AxiosError, it has a response object
+            console.error("Error fetching products:", error.response?.data || error.message);
+            setError(error.response?.data || "Failed to fetch product data.");
+          } else if (error instanceof Error) {
+            // Generic error handling for non-Axios errors
+            console.error("Error fetching products:", error.message);
+            setError("Failed to fetch product data.");
+          } else {
+            // Handle unexpected error shapes
+            console.error("Unknown error fetching products:", error);
+            setError("An unknown error occurred.");
+          }} finally {
+          setLoading(false);
+        }
+      };
+      if (email) { // Ensure email is not null or undefined before fetching
+        fetchProducts();
+      }
+    }, [email]);
+    
 
   const deleteProduct = async () => {
     if (!selectedProduct) return;
@@ -153,6 +208,10 @@ const ProductList = () => {
           className="w-full"
         />
       </div>
+      <div className="flex gap-4">
+          <Button onClick={generatePDF}>Download PDF</Button>
+          <Button onClick={generateExcel}>Download Excel</Button>
+        </div>
       <Table>
         <TableCaption className="mt-16">List of Products</TableCaption>
         <TableHeader>
@@ -171,7 +230,13 @@ const ProductList = () => {
           {filteredProducts.map((product, index) => (
             <TableRow key={product.id}>
               <TableCell>{index + 1}</TableCell>
-              <TableCell className="font-medium">{product.name}</TableCell>
+                 
+              <TableCell className="font-semibold">
+                      <Link href={`/manager/chart/${product.id}`}>
+                        <span className="text-blue-600 hover:underline">{product.name}</span>
+                      </Link>
+                    </TableCell>
+
               <TableCell>{product.description}</TableCell>
               <TableCell>${product.price.toFixed(2)}</TableCell>
               <TableCell>{product.stock}</TableCell>
@@ -181,7 +246,7 @@ const ProductList = () => {
                 <div className="flex gap-1">
                   <button
                     className="text-blue-500 hover:underline"
-                    onClick={() => router.push(`/admin/editproduct/${product.id}`)}
+                    onClick={() => router.push(`/manager/editproduct/${product.id}`)}
                   >
                     <Edit2 className="w-5 h-5" />
                   </button>

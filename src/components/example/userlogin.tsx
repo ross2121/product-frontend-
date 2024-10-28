@@ -1,14 +1,15 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import axios from "axios";
 import { Label } from "./label";
 import { Input } from "./input";
 import { cn } from "@/lib/utils";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod"; 
-import { useForm } from "react-hook-form"; 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-const backendUrl="https://product-2-g2b7.onrender.com";
+
+const backendUrl = "https://product-2-g2b7.onrender.com";
 const loginSchema = z.object({
   email: z.string().email("Invalid email address").nonempty("Email is required"),
   password: z.string().min(6, "Password must be at least 6 characters long"),
@@ -18,7 +19,7 @@ type LoginFormInputs = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter(); // Move useRouter here
+  const router = useRouter();
 
   const {
     register,
@@ -31,31 +32,37 @@ export default function LoginForm() {
   const onSubmit = async (data: LoginFormInputs) => {
     setError(null);
     try {
-      const response = await axios.post(`${backendUrl}/api/IM/login`, data); // Use relative URL
+      const response = await axios.post(`${backendUrl}/api/IM/login`, data);
       if (response.status === 200) {
-        router.push("/"); // Use router after login success
-        const {token}=response.data;
-        localStorage.setItem("authtoken",token);
+        const { token, role } = response.data;
+        localStorage.setItem("authtoken", token);
+        localStorage.setItem("user", data.email);
         console.log("Login successful", response.data);
+
+        if (role === "admin") {
+          router.push("/admin/dashboard");
+        } else {
+          router.push("/manager"); // Redirect to user dashboard or homepage
+        }
       }
     } catch (err: unknown) {
-      if (err instanceof Error && 'response' in err) {
+      if (err instanceof Error && "response" in err) {
         const axiosError = err as { response: { data: { message: string } } };
         setError(axiosError.response.data.message || "Login failed. Please try again.");
       } else {
         setError("An unexpected error occurred. Please try again.");
       }
-    }    
+    }
   };
 
   return (
     <div className="max-w-lg w-full mx-auto rounded-none md:rounded-2xl flex flex-col justify-center items-center p-4 md:p-8 z-10 shadow-input bg-black">
       <h2 className="font-bold text-2xl text-neutral-300 dark:text-neutral-200">
-        Welcome to MINI ERP system
+        Welcome to MINI ERP System
       </h2>
       <p className="text-neutral-400 text-sm max-w-sm mt-2 dark:text-neutral-300">
         Login here so you can be yourself, speak freely and feel close to the
-        most important people in your life no matter where they are
+        most important people in your life no matter where they are.
       </p>
 
       <form className="sm:my-8" onSubmit={handleSubmit(onSubmit)}>
@@ -92,19 +99,36 @@ export default function LoginForm() {
         {error && <p className="text-red-500 mt-4">{error}</p>}
 
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
+
+        <div className="flex justify-between mt-4">
+          <button
+            type="button"
+            onClick={() => router.push("/manager/auth/sign-up")}
+            className="text-violet-800 hover:underline"
+          >
+            Dont have an account? Sign Up
+          </button>
+          </div>
+            <div className="flex justify-between mt-4">
+          <button 
+            type="button"
+            onClick={() => router.push("/admin/auth/login")}
+            className="text-violet-800 hover:underline"
+          >
+            Login as Admin
+          </button>
+          </div>
       </form>
     </div>
   );
 }
 
-const BottomGradient = () => {
-  return (
-    <>
-      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
-      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
-    </>
-  );
-};
+const BottomGradient = () => (
+  <>
+    <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
+    <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
+  </>
+);
 
 const LabelInputContainer = ({
   children,
@@ -112,10 +136,8 @@ const LabelInputContainer = ({
 }: {
   children: React.ReactNode;
   className?: string;
-}) => {
-  return (
-    <div className={cn("flex flex-col space-y-2 w-full", className)}>
-      {children}
-    </div>
-  );
-};
+}) => (
+  <div className={cn("flex flex-col space-y-2 w-full", className)}>
+    {children}
+  </div>
+);

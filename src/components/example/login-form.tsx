@@ -31,11 +31,12 @@ export default function LoginForm() {
   const onSubmit = async (data: LoginFormInputs) => {
     setError(null);
     try {
-      const response = await axios.post(`${backendUrl}/api/admin/login`, data); // Use relative URL
+      const response = await axios.post(`${backendUrl}/api/admin/login`, data);
       if (response.status === 200) {
-        router.push("/"); // Use router after login success
+        router.push("/admin"); 
         const {token}=response.data;
         localStorage.setItem("authtoken",token);
+        localStorage.setItem("user",data.email);
         console.log("Login successful", response.data);
       }
     } catch (err: unknown) {
@@ -88,6 +89,13 @@ export default function LoginForm() {
           Login &rarr;
           <BottomGradient />
         </button>
+        <button
+            type="button"
+            onClick={() => router.push("/admin/auth/signup")}
+            className="text-violet-800 hover:underline"
+          >
+            Dont have an account?Register
+          </button>
 
         {error && <p className="text-red-500 mt-4">{error}</p>}
 

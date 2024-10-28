@@ -33,6 +33,7 @@ import Link from "next/link";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import autoTable from 'jspdf-autotable'
+import { withAuth } from "./useauth";
 
 interface Product {
   id: string;
@@ -283,4 +284,4 @@ const ProductList = () => {
   );
 };
 
-export default ProductList;
+export default withAuth(ProductList,"admin");

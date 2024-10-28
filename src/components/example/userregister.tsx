@@ -130,6 +130,13 @@ export default function SignupFormDemo() {
             {loading ? "Signing up...." : "Sign up"}
             <BottomGradient />
           </button>
+          <button
+            type="button"
+            onClick={() => router.push("/admin/auth/login")}
+            className="text-violet-800 hover:underline"
+          >
+            Alredy have an account?Login
+          </button>
 
           <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
         </form>
