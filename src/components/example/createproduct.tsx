@@ -7,7 +7,8 @@ import { Button } from "../atoms/button";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-export const CreateProduct: React.FC = () => {
+import { withAuth } from "./useauth";
+ const CreateProduct: React.FC = () => {
   const [form, setForm] = useState({
     name: "",
     SKU: "",
@@ -149,4 +150,5 @@ console.log(email);
     </div>
   );
 };
+export default withAuth(CreateProduct,"admin")
 

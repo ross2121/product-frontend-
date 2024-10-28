@@ -1,4 +1,4 @@
-import QuantityChart from "@/components/example/chart";
+import QuantityChart from "@/components/example/chart2";
 import React from "react";
 
 

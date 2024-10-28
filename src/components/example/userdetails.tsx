@@ -34,6 +34,7 @@ import {
 } from "../ui/drawer";
 import { Trash } from "lucide-react";
 import { Button } from "../ui/button";
+import { withAuth } from "./useauth";
 
 interface User {
   email: string;
@@ -245,3 +246,4 @@ export function UserTable() {
     </>
   );
 }
+export default withAuth(UserTable,"admin")

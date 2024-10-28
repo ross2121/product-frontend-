@@ -34,7 +34,7 @@ export function withAuth<T extends JSX.IntrinsicAttributes>(
         }
       } catch (error) {
         console.error("Invalid token:", error);
-        router.push("/manager/auth/sign-up");
+        router.push("/admin/auth/sign-up");
       }
     }, [router]);
 

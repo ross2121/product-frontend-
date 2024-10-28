@@ -1,5 +1,5 @@
 import React,{Suspense} from "react";
-import { CreateProduct } from "@/components/example/createproduct";
+import CreateProduct  from "@/components/example/createproduct";
 
 const Page:React.FC=()=> {
   return (

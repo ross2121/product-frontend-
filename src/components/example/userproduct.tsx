@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import axios from 'axios';
 import ProductStockChart from "./productstockchart";
-import ProductStockPieChart from './piecchart';
+// import ProductStockPieChart from './piecchart';
 import { withAuth } from './useauth';
 
 interface Product {
@@ -42,6 +42,7 @@ const Productstock: React.FC = () => {
     const outOfStock = products.filter((product) => product.stock === 0).length;
 
     return (
+        <Suspense>
         <div className="container mx-auto p-6 space-y-6">
             <h1 className="text-4xl font-bold text-center mb-6 text-gray-800">Inventory Manager ERP Dashboard</h1>
 
@@ -60,26 +61,20 @@ const Productstock: React.FC = () => {
                 </div>
             </div>
 
-            <div className="flex flex-col md:flex-row items-start justify-between w-full bg-white p-6 rounded-lg shadow-md mt-6 md:space-x-6">
-                <div className=" ml-10">
-                    <h2 className="text-2xl font-semibold mb-4 text-gray-800">Product Stock Levels</h2>
-                    {loading ? (
-                        <p className="text-gray-500">Loading...</p>
-                    ) : (
-                        <ProductStockChart products={products} />
-                    )}
-                </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-2xl font-semibold mb-4 text-gray-800">Product Stock Levels</h2>
+        {loading ? (
+          <p className="text-gray-500">Loading...</p>
+        ) : (
+          <div className="h-64 w-600">
+            {/* Set a smaller height for a more compact view */}
+            <ProductStockChart products={products} />
+          </div>
+        )}
+      </div>
 
-                <div className="flex-1 h-64">
-                    <h2 className="text-2xl font-semibold mb-4 text-gray-800">Product Stock Distribution</h2>
-                    {loading ? (
-                        <p className="text-gray-500">Loading Pie Chart...</p>
-                    ) : (
-                        <ProductStockPieChart products={products} />
-                    )}
-                </div>
-            </div>
         </div>
+        </Suspense>
     );
 };
 

@@ -40,7 +40,7 @@ const ProductStockChart: React.FC<ProductStockChartProps> = ({ products }) => {
           product.stock < 50 ? 'rgba(255, 99, 132, 1)' : 
           'rgba(75, 192, 192, 1)' 
         ),
-        borderWidth: 1,
+        borderWidth: 2,
       },
     ],
   };

@@ -2,11 +2,11 @@
 "use client"
 // import { motion } from "framer-motion";
 import Productstock from "@/components/example/userproduct";
-import { Suspense } from "react";
+
 
 const Home = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    // <Suspense fallback={<div>Loading...</div>}>
     <div>
       {/* Navbar */}
       {/* <HeaderNavAdmin /> */}
@@ -59,7 +59,7 @@ const Home = () => {
       </footer>
       
     </div>
-    </Suspense>
+    // </Suspense>
   );
 };
 
