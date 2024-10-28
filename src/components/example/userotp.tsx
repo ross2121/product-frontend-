@@ -8,7 +8,6 @@ import { Input } from "./input";
 
 const backendUrl = "https://product-2-g2b7.onrender.com";
 
-// Define Zod schema for validating user data
 const userDataSchema = z.object({
   name: z.string().min(1, "Name is required."),
   email: z.string().email("Invalid email format."),
@@ -32,7 +31,7 @@ const OTPPage = () => {
 
       const parsedData = JSON.parse(tempUserData);
 
-      // Validate user data using Zod
+   
       const userData = userDataSchema.parse(parsedData);
 
       const response = await axios.post(`${backendUrl}/api/IM/verifyotp`, {

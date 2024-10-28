@@ -8,7 +8,7 @@ import {
 } from "@nextui-org/navbar";
 import Link from "next/link";
 import LogoutAdmin from "../ui/logoutbtnadmin";
-import NotificationIcon from "./notificationicon"; // Import the notification icon component
+import NotificationIcon from "./notificationicon"; 
 import axios from "axios";
 
 interface Product {
@@ -22,7 +22,7 @@ const HeaderNavAdmin = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch out-of-stock products
+console.log(error);
   useEffect(() => {
     const fetchOutOfStockProducts = async () => {
       try {
@@ -31,7 +31,7 @@ const HeaderNavAdmin = () => {
           "https://product-2-g2b7.onrender.com/api/product/product"
         );
 
-        // Filter products with stock < 50
+      
         const lowStockProducts = response.data.filter(
           (product: Product) => product.stock < 50
         );
@@ -62,13 +62,11 @@ const HeaderNavAdmin = () => {
         <NavbarItem>
           <LogoutAdmin />
         </NavbarItem>
-
-        {/* Notification Icon for Out-of-Stock Products */}
         <NavbarItem className="relative">
           {loading ? (
             <p>Loading...</p>
           ) : error ? (
-            <p className="text-red-500">{error}</p>
+            <p className="text-red-500"></p>
           ) : (
             <NotificationIcon outOfStockProducts={outOfStockProducts} />
           )}

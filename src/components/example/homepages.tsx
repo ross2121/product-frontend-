@@ -8,7 +8,6 @@ interface Product {
   id: string;
   name: string;
   stock: number;
-  // Add other properties as needed, like price, category, etc.
 }
 const Productstock: React.FC = () => {
   const [products, setProducts] = useState([]);

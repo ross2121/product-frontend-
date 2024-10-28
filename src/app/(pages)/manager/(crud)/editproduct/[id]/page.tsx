@@ -1,5 +1,5 @@
 import React from "react";
-import EditProduct from "@/components/example/updateproduct";
+import EditProduct from "@/components/example/updateproductuser";
 
 const page = async  ({ params }: { params: Promise<{ id: string }> }) => {
 const id=(await params).id

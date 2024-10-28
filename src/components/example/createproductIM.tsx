@@ -7,6 +7,7 @@ import { Button } from "../atoms/button";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { withAuth } from "./useauth";
 
 export const Createproduct = () => {
   const [form, setForm] = useState<{
@@ -83,13 +84,12 @@ console.log(email);
       }, 2000);
     } catch (error: unknown) {
         let errorMessage = "Failed to create movie";
-      
-        // Check if error is an instance of AxiosError (or something similar)
+    
         if (axios.isAxiosError(error)) {
-          // Access error message from response if available, or fall back to generic message
+       
           errorMessage = error.response?.data?.message || errorMessage;
         } else if (error instanceof Error) {
-          // For non-Axios errors, get message from Error object
+
           errorMessage = error.message;
         }
       
@@ -180,3 +180,4 @@ console.log(email);
     </div>
   );
 };
+export default withAuth(Createproduct,"manager")

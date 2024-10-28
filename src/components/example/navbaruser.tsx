@@ -19,12 +19,11 @@ interface Product {
 }
 
 const HeaderNavAdmin = () => {
-  const [outOfStockProducts, setOutOfStockProducts] = useState<Product[]>([]); // Define type for products array
+  const [outOfStockProducts, setOutOfStockProducts] = useState<Product[]>([]);
   const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Retrieve email from localStorage on client-side
+console.log(error);
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedEmail = window.localStorage.getItem("user");
@@ -32,11 +31,11 @@ const HeaderNavAdmin = () => {
     }
   }, []);
 
-  // Fetch out-of-stock products if email is available
+ 
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true); // Start loading
-      setError(null);   // Reset any previous errors
+      setLoading(true);
+      setError(null);   
 
       try {
         if (email) {
@@ -46,7 +45,6 @@ const HeaderNavAdmin = () => {
           );
           console.log("Response data:", response.data);
           if (Array.isArray(response.data)) {
-            // Filter out products with stock less than 200000
             const outOfStockProducts = response.data.filter((product: Product) => product.stock < 50);
             setOutOfStockProducts(outOfStockProducts);
           } else {
@@ -56,7 +54,6 @@ const HeaderNavAdmin = () => {
         }
       } catch (err) {
         let errorMessage = "An unknown error occurred";
-        // Capture specific error messages, if available
         if (axios.isAxiosError(err) && err.response?.data) {
           errorMessage =
             typeof err.response.data === "string"
@@ -66,9 +63,9 @@ const HeaderNavAdmin = () => {
           errorMessage = err.message;
         }
         console.error("Error fetching products:", errorMessage);
-        setError(errorMessage); // Ensure error is a string
+        setError(errorMessage);
       } finally {
-        setLoading(false); // End loading
+        setLoading(false);
       }
     };
 
@@ -93,13 +90,9 @@ const HeaderNavAdmin = () => {
         <NavbarItem>
           <LogoutAdmin />
         </NavbarItem>
-
-        {/* Notification Icon for Out-of-Stock Products */}
         <NavbarItem className="relative">
           {loading ? (
             <p>Loading...</p>
-          ) : error ? (
-            <p>Error: {error}</p>  
           ) : (
             <NotificationIcon outOfStockProducts={outOfStockProducts} />
           )}

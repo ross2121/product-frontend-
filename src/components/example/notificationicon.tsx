@@ -1,9 +1,9 @@
 // NotificationIcon.tsx
 import React, { useState} from 'react';
-import { FiBell } from 'react-icons/fi'; // Using react-icons for a bell icon
+import { FiBell } from 'react-icons/fi'; 
 
 interface NotificationIconProps {
-  outOfStockProducts: { id: string; name: string }[]; // Define structure inline
+  outOfStockProducts: { id: string; name: string }[]; 
 }
 
 const NotificationIcon: React.FC<NotificationIconProps> = ({ outOfStockProducts }) => {
@@ -18,7 +18,6 @@ const NotificationIcon: React.FC<NotificationIconProps> = ({ outOfStockProducts 
 
   return (
     <div className="relative">
-      {/* Bell icon with badge */}
       <button onClick={toggleDropdown} className="relative p-2 rounded-full bg-gray-200 hover:bg-gray-300">
         <FiBell className="text-gray-700" size={24} />
         {outOfStockProducts.length > 0 && (
@@ -28,7 +27,7 @@ const NotificationIcon: React.FC<NotificationIconProps> = ({ outOfStockProducts 
         )}
       </button>
 
-      {/* Dropdown list of out-of-stock products */}
+  
       {isDropdownOpen && (
         <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
           <div className="p-4 font-bold text-gray-700 border-b border-gray-200">

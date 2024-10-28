@@ -16,12 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <div className={`${inter.className} w-full min-h-screen`}>
-      {/* Full viewport height and width */}
+   
       <div className="flex h-full">
-        {/* Sidebar - Uncomment if you have a sidebar component */}
-        {/* <SidebarDemo /> */}
+      
 
-        {/* Main content */}
+    
         <div className="flex-1 flex flex-col">
           <HeaderNavAdmin />
           <main className="flex-grow">{children}</main>

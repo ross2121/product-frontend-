@@ -73,7 +73,7 @@ const QuantityChart: React.FC<{ ProductId: number }> = ({ ProductId }) => {
           display: true,
           text: 'Quantity',
         },
-        beginAtZero: true, // Start y-axis from zero
+        beginAtZero: true,
       },
     },
     plugins: {

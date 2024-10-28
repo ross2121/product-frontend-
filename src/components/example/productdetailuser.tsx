@@ -33,6 +33,7 @@ import * as XLSX from "xlsx"
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import autoTable from 'jspdf-autotable'
+import { withAuth } from "./useauth";
 
 interface Product {
   id: string;
@@ -46,24 +47,26 @@ interface Product {
   updatedAt: string;
 }
 
+
+
 const ProductList = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
+
   const router = useRouter();
- 
-    // const email=window.localStorage.getItem("user");
-    useEffect(()=>{
-      if(window!==undefined){
-        const email=window.localStorage.getItem("user");
-        setEmail(email)
-      }
-    })
-    const generatePDF = () => {
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userEmail = window.localStorage.getItem("user");
+      setEmail(userEmail);
+    }
+  }, []);
+  const generatePDF = () => {
       const doc = new jsPDF();
       
       doc.text("Product Report", 20, 10);
@@ -97,43 +100,41 @@ const ProductList = () => {
       XLSX.utils.book_append_sheet(workbook, worksheet, "Product Report");
       XLSX.writeFile(workbook, "product_report.xlsx");
     };
-  
-  
-    useEffect(() => {
-      const fetchProducts = async () => {
-        setLoading(true);
-        try {
-          console.log("Fetching products for email:", email);
-          const response = await axios.get<Product[]>(
-            `https://product-2-g2b7.onrender.com/api/product/pri/${email}`
-          );
-          console.log("Response data:", response.data);
-          setProducts(response.data);
-        } catch (error: unknown) {
-          if (axios.isAxiosError(error)) {
-            // If error is an AxiosError, it has a response object
-            console.error("Error fetching products:", error.response?.data || error.message);
-            setError(error.response?.data || "Failed to fetch product data.");
-          } else if (error instanceof Error) {
-            // Generic error handling for non-Axios errors
-            console.error("Error fetching products:", error.message);
-            setError("Failed to fetch product data.");
-          } else {
-            // Handle unexpected error shapes
-            console.error("Unknown error fetching products:", error);
-            setError("An unknown error occurred.");
-          }} finally {
-          setLoading(false);
-        }
-      };
-      if (email) { // Ensure email is not null or undefined before fetching
-        fetchProducts();
+
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      console.log("Fetching products for email:", email);
+      const response = await axios.get<Product[]>(
+        `https://product-2-g2b7.onrender.com/api/product/pri/${email}`
+      );
+      if (response.data.length === 0) {
+        setError("No products available.");
+      } else {
+        setProducts(response.data);
       }
-    }, [email]);
-    
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error("Error fetching products:", error.message);
+        setError(error.response?.data.message || error.message || "Failed to fetch product data.");
+      } else {
+        console.error("Unknown error fetching products:", error);
+        setError("An unknown error occurred.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (email) {
+      fetchProducts();
+    }
+  }, [email]);
 
   const deleteProduct = async () => {
     if (!selectedProduct) return;
+    setLoading(true);
     try {
       await axios.delete(
         `https://product-2-g2b7.onrender.com/api/product/product/${selectedProduct.id}`,
@@ -158,8 +159,6 @@ const ProductList = () => {
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value);
-
-
   const isDeleteEnabled = selectedProduct && inputValue === selectedProduct.name;
 
   if (loading) {
@@ -174,7 +173,6 @@ const ProductList = () => {
             <TableHead>Price</TableHead>
             <TableHead>Stock</TableHead>
             <TableHead>SKU</TableHead>
-            {/* <TableHead>Created BY</TableHead> */}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -209,9 +207,9 @@ const ProductList = () => {
         />
       </div>
       <div className="flex gap-4">
-          <Button onClick={generatePDF}>Download PDF</Button>
-          <Button onClick={generateExcel}>Download Excel</Button>
-        </div>
+        <Button onClick={generatePDF}>Download PDF</Button>
+        <Button onClick={generateExcel}>Download Excel</Button>
+      </div>
       <Table>
         <TableCaption className="mt-16">List of Products</TableCaption>
         <TableHeader>
@@ -222,7 +220,6 @@ const ProductList = () => {
             <TableHead>Price</TableHead>
             <TableHead>Stock</TableHead>
             <TableHead>SKU</TableHead>
-            {/* <TableHead>Created BY</TableHead> */}
             <TableHead>Options</TableHead>
           </TableRow>
         </TableHeader>
@@ -230,18 +227,15 @@ const ProductList = () => {
           {filteredProducts.map((product, index) => (
             <TableRow key={product.id}>
               <TableCell>{index + 1}</TableCell>
-                 
               <TableCell className="font-semibold">
-                      <Link href={`/manager/chart/${product.id}`}>
-                        <span className="text-blue-600 hover:underline">{product.name}</span>
-                      </Link>
-                    </TableCell>
-
+                <Link href={`/manager/chart/${product.id}`}>
+                  <span className="text-blue-600 hover:underline">{product.name}</span>
+                </Link>
+              </TableCell>
               <TableCell>{product.description}</TableCell>
               <TableCell>${product.price.toFixed(2)}</TableCell>
               <TableCell>{product.stock}</TableCell>
               <TableCell>{product.SKU}</TableCell>
-              {/* <TableCell>{product.createdby}</TableCell> */}
               <TableCell>
                 <div className="flex gap-1">
                   <button
@@ -310,4 +304,6 @@ const ProductList = () => {
   );
 };
 
-export default ProductList;
+export default withAuth(ProductList, "manager");
+
+//  // 

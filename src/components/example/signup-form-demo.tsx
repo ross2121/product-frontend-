@@ -29,10 +29,10 @@ export default function SignupFormDemo() {
     setError("");
     setLoading(true);
 
-    // Validate form data using Zod
+
     const validation = signupSchema.safeParse(formdata);
     if (!validation.success) {
-      setError(validation.error.issues[0].message); // Display first error message
+      setError(validation.error.issues[0].message); 
       setLoading(false);
       return;
     }
@@ -54,7 +54,7 @@ export default function SignupFormDemo() {
       if (error instanceof Error && 'response' in error) {
         const axiosError = error as { response: { data: { message: string } } };
         if (axiosError.response && axiosError.response.data && axiosError.response.data.message) {
-          setError(axiosError.response.data.message); // Backend email error
+          setError(axiosError.response.data.message);
         } else {
           setError("Signup failed. Please try again later.");
         }
