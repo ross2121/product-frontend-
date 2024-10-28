@@ -56,7 +56,7 @@ const OTPPage = () => {
         localStorage.setItem("authtoken", token);
         localStorage.setItem("user", email);
         localStorage.removeItem("tempUserData");
-        router.push("/");
+        router.push("/admin");
       } else {
         setError(
           response.data.message || "OTP verification failed. Please try again."
