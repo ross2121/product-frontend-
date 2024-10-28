@@ -12,7 +12,6 @@ import {
 } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import axios from 'axios';
-import { withAuth } from './withauth2';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
