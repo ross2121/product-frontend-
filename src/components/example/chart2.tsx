@@ -12,7 +12,6 @@ import {
 } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import axios from 'axios';
-import { withAuth } from './withauth2';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
@@ -98,4 +97,4 @@ const QuantityChart: React.FC<{ ProductId: number }> = ({ ProductId }) => {
   return <Bar data={chartData} options={options} />;
 };
 
-export default withAuth<{ ProductId: number }>(QuantityChart, "manager");
+export default QuantityChart

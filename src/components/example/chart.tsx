@@ -98,4 +98,4 @@ const QuantityChart: React.FC<{ ProductId: number }> = ({ ProductId }) => {
   return <Bar data={chartData} options={options} />;
 };
 
-export default withAuth<{ ProductId: number }>(QuantityChart, "admin");
+export default QuantityChart
